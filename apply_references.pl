@@ -191,21 +191,11 @@ sub citationMapping(@) {
     return \%retval;
 }
 
-# takes a bibtex entry
-sub entryToReplacement($) {
-    my $entry = shift();
-    my @authors = $entry->cleaned_author;
-    my $author = $authors[0];
-    my $text = "";
-    if ($author->von) {
-	$text .= $author->von . " ";
-    }
-    $text .= $author->last;
-    if (scalar(@authors) > 1) {
-	$text .= " et al.";
-    }
+# takes a bibtex entry and its position in the references section
+sub entryToReplacement($$) {
+    my ($entry, $position) = @_;
     my $id = htmlizeId($entry->key);
-    return "[$text](#$id)";
+    return "<a href=\"#$id\">[$position]</a>";
 }
 
 sub htmlizeId($) {
@@ -217,6 +207,18 @@ sub htmlizeId($) {
 	$id = $1 . ord($2) . $3;
     }
     return $id;
+}
+
+# takes a sorted array of bibtex entries
+# returns a reference to a hash mapping entries to positions
+sub entryToPosition(@) {
+    my @entries = @_;
+    my %retval;
+    my $position = 1;
+    foreach my $entry (@entries) {
+	$retval{$entry} = $position++;
+    }
+    return \%retval;
 }
 
 # takes the following:
@@ -238,8 +240,9 @@ sub intersectBibtexEntries($$) {
 	push(@unsortedUsed, $bibtexEntriesRef->{$key});
     }
     my @sortedUsed = sort entriesComparator @unsortedUsed;
+    my $positionsRef = entryToPosition(@sortedUsed);
     foreach my $used (@sortedUsed) {
-	$replacements{$used->key} = entryToReplacement($used);
+	$replacements{$used->key} = entryToReplacement($used, $positionsRef->{$used});
     }
     return (\@sortedUsed, \%replacements);
 }
