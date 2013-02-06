@@ -174,7 +174,7 @@ sub citationKeysInLines(@) {
     my @lines = @_;
     my %retval;
     foreach my $line (@lines) {
-	foreach ($line =~ /\\cite\{(.*?)\}/g) {
+	while ($line =~ /\\cite\{(.*?)\}/g) {
 	    $retval{$1} = undef;
 	}
     }
