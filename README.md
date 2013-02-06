@@ -17,7 +17,7 @@ To make a citation in your Markdown, use the syntax:
 
 Once you've added your citations, you can run the script like so:
 ```console
-$ perl apply_references list.bib input.md.ref output.md
+$ perl apply_references.pl list.bib input.md.ref output.md
 ```
 
 ...where the parameters are:
