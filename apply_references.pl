@@ -199,12 +199,16 @@ sub entryToReplacement($$) {
     return "<a href=\"#$id\">[$position]</a>";
 }
 
+# make the given id safe for HTML
+# this transformation is overconservative with respect to what is
+# considered a valid id to HTML, but different markdown parsers
+# handle this differently (I'm looking at you, GitHub)
 sub htmlizeId($) {
     my $id = shift();
     if ($id =~ /^[^A-Za-z]/) {
 	$id = 'a' . $id;
     }
-    while ($id =~ /^(.*)([^A-Za-z0-9\-_:\.])(.*)$/) {
+    while ($id =~ /^(.*)([^A-Za-z0-9])(.*)$/) {
 	$id = $1 . ord($2) . $3;
     }
     return $id;
