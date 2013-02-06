@@ -55,16 +55,16 @@ sub linesToFile($$) {
 
 sub compareEntriesSameAuthorsPrefix($$) {
     my ($entry1, $entry2) = @_;
-    my $title1 = $entry1->field('title');
-    my $title2 = $entry2->field('title');
+    my $title1 = $entry1->cleaned_field('title');
+    my $title2 = $entry2->cleaned_field('title');
     if ($title1 && $title2) {
 	my $compare = $title1 cmp $title2;
 	if ($compare != 0) {
 	    return $compare;
 	} else {
 	    # titles are equal - try for the year
-	    my $year1 = $entry1->field('year');
-	    my $year2 = $entry2->field('year');
+	    my $year1 = $entry1->cleaned_field('year');
+	    my $year2 = $entry2->cleaned_field('year');
 	    if ($year1 && $year2) {
 		return $year1 <=> $year2;
 	    } elsif ($year1) {
@@ -84,8 +84,8 @@ sub compareEntriesSameAuthorsPrefix($$) {
 
 sub compareEntries($$) {
     my ($entry1, $entry2) = @_;
-    my @authors1 = $entry1->author;
-    my @authors2 = $entry2->author;
+    my @authors1 = $entry1->cleaned_author;
+    my @authors2 = $entry2->cleaned_author;
     my $index = 0;
     while($index < scalar(@authors1) &&
 	  $index < scalar(@authors2)) {
@@ -146,13 +146,13 @@ sub authorsString(@) {
 # given a bibtex entry, it returns an appropriate string for the entry
 sub bibtexEntryToString($) {
     my $entry = shift();
-    my @authors = $entry->author;
+    my @authors = $entry->cleaned_author;
     my $retval = authorsString(@authors);
-    my $title = $entry->field('title');
+    my $title = $entry->cleaned_field('title');
     if ($title) {
 	$retval .= ". " . $title . ".";
     }
-    my $year = $entry->field('year');
+    my $year = $entry->cleaned_field('year');
     if ($year) {
 	$retval .= " " . $year;
     }
@@ -194,7 +194,7 @@ sub citationMapping(@) {
 # takes a bibtex entry
 sub entryToReplacement($) {
     my $entry = shift();
-    my @authors = $entry->author;
+    my @authors = $entry->cleaned_author;
     my $author = $authors[0];
     my $text = "";
     if ($author->von) {
