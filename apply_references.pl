@@ -1,8 +1,9 @@
 #!/usr/bin/perl
 
-use Text::Unidecode;
 use BibTeX::Parser;
 use IO::File;
+use Text::Unidecode;
+
 use strict;
 
 sub usage() {
