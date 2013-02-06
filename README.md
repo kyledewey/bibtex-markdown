@@ -1,4 +1,4 @@
-bibtex-Markdown
+bibtex-markdown
 ===============
 
 A terrible little hack to integrate BibTeX into Markdown in a way that is independent of the Markdown parser.
