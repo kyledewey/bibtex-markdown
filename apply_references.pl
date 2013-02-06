@@ -279,6 +279,7 @@ sub replaceOrAddReferences($$) {
     }
 
     # add in the reference section
+    push(@$linesRef, ''); # newline
     push(@$linesRef, '## References');
     my $whichEntry = 1;
     foreach my $entry (@$sortedEntries) {
@@ -305,6 +306,8 @@ my $citationKeysInLinesRef = citationKeysInLines(@inputLines);
 my ($orderedEntriesRef,
     $replacementsRef) = intersectBibtexEntries($citationKeysInLinesRef,
 					       $bibtexMappingRef);
-replaceCitations(\@inputLines, $replacementsRef);
-replaceOrAddReferences(\@inputLines, $orderedEntriesRef);
+if (scalar(@$orderedEntriesRef) > 0) {
+    replaceCitations(\@inputLines, $replacementsRef);
+    replaceOrAddReferences(\@inputLines, $orderedEntriesRef);
+}
 linesToFile(\@inputLines, $outputFilename);
