@@ -1,5 +1,6 @@
 #!/usr/bin/perl
 
+use Text::Unidecode;
 use BibTeX::Parser;
 use IO::File;
 use strict;
@@ -55,16 +56,16 @@ sub linesToFile($$) {
 
 sub compareEntriesSameAuthorsPrefix($$) {
     my ($entry1, $entry2) = @_;
-    my $title1 = $entry1->cleaned_field('title');
-    my $title2 = $entry2->cleaned_field('title');
+    my $title1 = unidecode($entry1->cleaned_field('title'));
+    my $title2 = unidecode($entry2->cleaned_field('title'));
     if ($title1 && $title2) {
 	my $compare = $title1 cmp $title2;
 	if ($compare != 0) {
 	    return $compare;
 	} else {
 	    # titles are equal - try for the year
-	    my $year1 = $entry1->cleaned_field('year');
-	    my $year2 = $entry2->cleaned_field('year');
+	    my $year1 = unidecode($entry1->cleaned_field('year'));
+	    my $year2 = unidecode($entry2->cleaned_field('year'));
 	    if ($year1 && $year2) {
 		return $year1 <=> $year2;
 	    } elsif ($year1) {
@@ -126,7 +127,7 @@ sub authorString($) {
     if ($author->jr) {
 	$retval .= " " . $author->jr;
     }
-    return $retval;
+    return unidecode($retval);
 }
 
 sub authorsString(@) {
@@ -148,11 +149,11 @@ sub bibtexEntryToString($) {
     my $entry = shift();
     my @authors = $entry->cleaned_author;
     my $retval = authorsString(@authors);
-    my $title = $entry->cleaned_field('title');
+    my $title = unidecode($entry->cleaned_field('title'));
     if ($title) {
 	$retval .= ". " . $title . ".";
     }
-    my $year = $entry->cleaned_field('year');
+    my $year = unidecode($entry->cleaned_field('year'));
     if ($year) {
 	$retval .= " " . $year;
     }
