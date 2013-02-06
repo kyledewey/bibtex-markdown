@@ -234,7 +234,7 @@ sub intersectBibtexEntries($$) {
     my @unsortedUsed;
     foreach my $key (keys(%$citationsUsedRef)) {
 	if (!exists($bibtexEntriesRef->{$key})) {
-	    print "Internal failure.  No bibtex entry for '$key'";
+	    print "Internal error.  No bibtex entry for '$key'\n";
 	    exit(1);
 	}
 	push(@unsortedUsed, $bibtexEntriesRef->{$key});
@@ -255,6 +255,10 @@ sub replaceCitations($$) {
     my ($linesRef, $keysMappingRef) = @_;
     for(my $lineNum = 0; $lineNum < scalar(@$linesRef); $lineNum++) {
 	while ($linesRef->[$lineNum] =~ /^(.*)\\cite\{(.*?)\}(.*)$/) {
+	    if (!exists($keysMappingRef->{$2})) {
+		print "Internal error. No mapping for '$2'\n";
+		exit(1);
+	    }
 	    $linesRef->[$lineNum] = $1 . $keysMappingRef->{$2} . $3;
 	}
     }
