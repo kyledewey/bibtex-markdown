@@ -133,16 +133,27 @@ sub authorString($) {
 
 sub authorsString(@) {
     my @authors = @_;
-    if (scalar(@authors) == 0) {
+    my $len = scalar(@authors);
+
+    if ($len == 0) {
 	return '';
-    } elsif (scalar(@authors) == 1) {
+    } elsif ($len == 1) {
 	return authorString($authors[0]);
-    } elsif (scalar(@authors) == 2) {
-	return authorString($authors[0]) . " and " . authorString($authors[1]);
-    } else {
-	my $first = shift(@authors);
-	return authorString($first) . ", " . authorsString(@authors);
     }
+
+    my $retval = '';
+    while (($len = scalar(@authors)) != 0) {
+	if ($len == 2) {
+	    $retval .= authorString(shift(@authors));
+	    $retval .= " and ";
+	    $retval .= authorString(shift(@authors));
+	} else {
+	    $retval .= authorString(shift(@authors));
+	    $retval .= ", ";
+	}
+    }
+
+    return $retval;
 }
 
 # given a bibtex entry, it returns an appropriate string for the entry
