@@ -4,7 +4,11 @@ bibtex-markdown
 A terrible little hack to integrate BibTeX into Markdown in a way that is independent of the Markdown parser.
 
 ## Installation
-Requires IO::File, BibTeX::Parser, and Text::Unidecode, all available from CPAN.  Other than these dependencies, you can simply run the script.
+Requires IO::File, BibTeX::Parser, and Text::Unidecode, all available from CPAN.
+For help installing these, you may want to consult [this page](http://perl.about.com/od/packagesmodules/qt/perlcpan.htm).
+You should install these as root to give system-wide access to the modules.
+
+Once these modules have been installed, you should be able to run the script as-is, with no special caveats.
 
 
 ## Usage
