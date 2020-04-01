@@ -1,10 +1,11 @@
-#!/usr/bin/perl
+#!/usr/bin/perl -w
 
 use BibTeX::Parser;
 use IO::File;
 use Text::Unidecode;
 
 use strict;
+use warnings;
 
 sub usage() {
     print "Takes the following params:\n";
@@ -156,16 +157,48 @@ sub authorsString(@) {
     return $retval;
 }
 
+# Takes:
+#  -entry
+#  -field name
+#
+# Returns the decoded field name, or undef if there is no such field
+sub tryGetFieldFromEntry($$) {
+    my ($entry, $field) = @_;
+    if ($entry->field($field)) {
+        return unidecode($entry->cleaned_field($field));
+    } else {
+        return undef;
+    }
+}
+
+# given a bibtex entry, it returns the venue as a string, or undef if
+# there is no venue
+sub bibtexEntryVenueToString($) {
+    my $entry = shift();
+    # try journal first
+    my $journal = tryGetFieldFromEntry($entry, 'journal');
+    if ($journal) {
+        return $journal;
+    } else {
+        # try booktitle second
+        return tryGetFieldFromEntry($entry, 'booktitle');
+    }
+}
+
 # given a bibtex entry, it returns an appropriate string for the entry
 sub bibtexEntryToString($) {
     my $entry = shift();
     my @authors = $entry->cleaned_author;
     my $retval = authorsString(@authors);
-    my $title = unidecode($entry->cleaned_field('title'));
+    my $title = tryGetFieldFromEntry($entry, 'title');
     if ($title) {
 	$retval .= ". " . $title . ".";
     }
-    my $year = unidecode($entry->cleaned_field('year'));
+    my $venue = bibtexEntryVenueToString($entry);
+    if ($venue) {
+        $retval .= " " . $venue . ".";
+    }
+    my $year = tryGetFieldFromEntry($entry, 'year');
     if ($year) {
 	$retval .= " " . $year;
     }
