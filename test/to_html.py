@@ -8,11 +8,11 @@ import sys
 # for a single Markdown parser
 
 if len(sys.argv) != 2:
-    print "Needs an input file name"
+    print("Needs an input file name")
     sys.exit(1)
 
 with open(sys.argv[1]) as fh:
     md = markdown.markdown(fh.read())
     for line in md.split("\n"):
-        print line
+        print(line)
 
