@@ -171,18 +171,33 @@ sub tryGetFieldFromEntry($$) {
     }
 }
 
+# Takes:
+#  -entry
+#  -field names
+#
+# Returns the first decoded field name that existed, or undef if none
+# exist
+sub tryGetFirstFieldFromEntry($@) {
+    my ($entry, @fields) = @_;
+    foreach my $field (@fields) {
+        my $output = tryGetFieldFromEntry($entry, $field);
+        if ($output) {
+            return $output;
+        }
+    }
+
+    return undef;
+}
+
 # given a bibtex entry, it returns the venue as a string, or undef if
 # there is no venue
 sub bibtexEntryVenueToString($) {
     my $entry = shift();
-    # try journal first
-    my $journal = tryGetFieldFromEntry($entry, 'journal');
-    if ($journal) {
-        return $journal;
-    } else {
-        # try booktitle second
-        return tryGetFieldFromEntry($entry, 'booktitle');
-    }
+    return tryGetFirstFieldFromEntry($entry,
+                                     'journal',
+                                     'booktitle',
+                                     'publisher',
+                                     'url');
 }
 
 # given a bibtex entry, it returns an appropriate string for the entry
